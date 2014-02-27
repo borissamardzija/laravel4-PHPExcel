@@ -32,6 +32,7 @@ use \PHPExcel;
 use \PHPExcel_Reader_HTML;
 use \PHPExcel_Style_Color;
 use \PHPExcel_Style_Border;
+use \PHPExcel_Style_Fill;
 
 class HTML_reader extends \PHPExcel_Reader_HTML
 {
@@ -237,6 +238,19 @@ class HTML_reader extends \PHPExcel_Reader_HTML
                 foreach($child->attributes as $attribute) {
 //                  echo '<b>ATTRIBUTE: </b>' , $attribute->name , ' => ' , $attribute->value , '<br />';
                     $attributeArray[$attribute->name] = $attribute->value;
+
+                    // Set background fill
+                    if ($attribute->name == 'data-background') {
+                        $sheet->getStyle($column.$row)->applyFromArray(
+                            array(
+                                'fill' => array(
+                                    'type' => PHPExcel_Style_Fill::FILL_SOLID,
+                                    'color' => array ('rgb' => $attribute->value)
+                                )
+                            )
+                        );
+                    }
+
                 }
 
                 switch($child->nodeName) {
